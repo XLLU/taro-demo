@@ -27,10 +27,15 @@
 ## 映射本地服务到互联网
 - 域名映射
 - nginx配置 
+
 >> systemctl start nginx
+
 >> systemctl enable nginx
+
 >> nginx -s reload
+
 >> cd /etc/nginx/conf.d
+
 >> vi sandbox.kindlekeys.cn
 
 ```json
@@ -54,7 +59,9 @@ server {
 - 开启ssh通道 (最终nginx报502没有成功 ==> 换成8080端口后成功)
 
 >> ssh -vnfNT -R 8080:localhost:3333 root@kk
+
 >> netstat -lnp|grep 8080
+
 >> kill -9 'pid'
 
 
