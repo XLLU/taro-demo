@@ -27,14 +27,14 @@
 ## 映射本地服务到互联网
 - 域名映射
 - nginx配置 
-``` cmd
-    > systemctl start nginx
-    > systemctl enable nginx
-    > nginx -s reload
-    > cd /etc/nginx/conf.d
-    > vi sandbox.kindlekeys.cn
-```
+>> systemctl start nginx
+>> systemctl enable nginx
+>> nginx -s reload
+>> cd /etc/nginx/conf.d
+>> vi sandbox.kindlekeys.cn
+
 ```json
+
 upstream tunnel {
     server 127.0.0.1:7689;
 }
@@ -48,14 +48,15 @@ server {
         proxy_redirect off;
         proxy_pass http://tunnel;
 }
+
 ```
 
 - 开启ssh通道 (最终nginx报502没有成功 ==> 换成8080端口后成功)
-```cmd
-    > ssh -vnfNT -R 8080:localhost:3333 root@kk
-    > netstat -lnp|grep 8080
-    > kill -9 'pid'
-```
+
+>> ssh -vnfNT -R 8080:localhost:3333 root@kk
+>> netstat -lnp|grep 8080
+>> kill -9 'pid'
+
 
 - 参考链接
 > [Ninghao Ningx + SSH Tunnel](https://ninghao.net/blog/4452)
