@@ -1,13 +1,13 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View } from '@tarojs/components'
+import { View, Button, Text } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 
 import { add, minus, asyncAdd } from '../../actions/counter'
 
-// eslint-disable-next-line import/first
-import { AtList, AtListItem } from 'taro-ui'
+import { AtButton, AtList, AtListItem } from 'taro-ui'
 
 import './index.scss'
+
 
 @connect(({ counter }) => ({
   counter

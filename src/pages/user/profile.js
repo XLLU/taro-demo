@@ -1,18 +1,20 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View } from '@tarojs/components'
 
-class Profile extends Component {
-    config = {
-        navigationBarTitleText: 'Profile'
-    }
+class UserProfile extends Component {
+  config = {
+    navigationBarTitleText: '我的'
+  }
 
-    render() {
-        return (
-            <View>
-                User Profile
-            </View>
-        )
-    }
+  render() {
+    return (
+      <View>
+        <View className='page-demo'>
+          UserProfile
+        </View>
+      </View>
+    )
+  }
 }
 
-export default Profile
+export default UserProfile
