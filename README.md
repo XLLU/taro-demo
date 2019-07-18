@@ -26,6 +26,14 @@
 
 > npm run dev:server
 
+> git branch
+
+> git log
+
+> git checkout -b scaffold f53b93a
+
+> git push origin scaffold
+
 ## 映射本地服务到互联网
 ### 域名映射
 
