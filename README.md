@@ -39,10 +39,8 @@
 
 > cd /etc/nginx/conf.d
 
-> vi sandbox.kindlekeys.cn
-
+> vi sandbox_kindlekeys_cn.conf
 ```
-
 upstream tunnel {
     server 127.0.0.1:8080;
 }
@@ -56,7 +54,6 @@ server {
         proxy_redirect off;
         proxy_pass http://tunnel;
 }
-
 ```
 
 ### 开启ssh通道 (最终nginx报502没有成功 ==> 换成8080端口后成功)
