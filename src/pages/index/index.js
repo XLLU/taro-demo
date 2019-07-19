@@ -8,22 +8,23 @@ import { AtButton, AtList, AtListItem } from 'taro-ui'
 
 import './index.scss'
 
+
 @connect(({ counter }) => ({
   counter
 }), (dispatch) => ({
-  add () {
+  add() {
     dispatch(add())
   },
-  dec () {
+  dec() {
     dispatch(minus())
   },
-  asyncAdd () {
+  asyncAdd() {
     dispatch(asyncAdd())
   }
 }))
 class Index extends Component {
 
-    config = {
+  config = {
     navigationBarTitleText: '首页'
   }
 
@@ -31,15 +32,15 @@ class Index extends Component {
     products: []
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     console.log(this.props, nextProps)
   }
 
-  componentWillUnmount () { }
+  componentWillUnmount() { }
 
-  componentDidShow () { }
+  componentDidShow() { }
 
-  componentDidHide () { } 
+  componentDidHide() { }
 
   async componentWillMount() {
     const response = await Taro.request({
@@ -50,12 +51,12 @@ class Index extends Component {
       products: response.data
     })
 
-    console.log(response) 
+    console.log(response)
   }
 
-  render () {
+  render() {
     const { products } = this.state
-    
+
     return (
       <View className='index'>
         <AtList>

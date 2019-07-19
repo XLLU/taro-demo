@@ -1,4 +1,7 @@
-@import "_variables_overrides"; // Works
+@import "variable_overrides";
 @import "~taro-ui/dist/style/index.scss";
+@import "variables";
 @import "utilities";
-// @import "_variables_overrides"; // Not work
+@import "page";
+@import "card";
+@import "placeholder";
