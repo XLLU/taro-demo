@@ -72,6 +72,8 @@ server {
 
 > kill -9 'pid'
 
+> fuser -k 8080/tcp
+
 
 ### 参考链接
 - [Ninghao Ningx + SSH Tunnel](https://ninghao.net/blog/4452)

@@ -1,58 +1,170 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Text } from '@tarojs/components'
+import { View } from '@tarojs/components'
+import { AtPagination, AtActivityIndicator } from 'taro-ui'
+import _ from 'lodash'
 import SearchBar from '../../components/search-bar'
+import ProductList from '../../components/product-list'
+import Placeholder from '../../components/placeholder';
+import fetchData from '../../utilities/fetch-data'
 
 class ShopIndex extends Component {
+  constructor() {
+    this.fetchData = fetchData
+  }
+
   config = {
     navigationBarTitleText: 'W-Store'
   }
 
-  switchTab() {
-    Taro.switchTab({
-      url: '/pages/shop/cart',
+  state = {
+    products: [],
+    placeholder: true,
+    total: 0,
+    pageSize: 2,
+    current: 1,
+    serviceError: false,
+    search: '',
+    searching: false,
+    errorPageMessage: ''
+  }
+
+  search(value = '') {
+    console.log(`搜索：${value}`)
+
+    this.setState({
+      searching: true,
+      current: 1
+    }, () => {
+      this.fetchData({
+        resource: 'products',
+        search: value,
+        page: this.state.current,
+        pageSize: this.state.pageSize,
+        success: this.fetchDataSuccess.bind(this),
+        fail: this.fetchDataFail.bind(this),
+        complete: this.fetchDataComplete.bind(this)
+      })
     })
   }
 
-  setTabBarBadge(type) {
-    switch (type) {
-      case 'badge':
-        Taro.setTabBarBadge({
-          index: 1,
-          text: '1',
-        })
-        break;
-      case 'dot':
-        Taro.showTabBarRedDot({
-          index: 1,
-        })
-        break;
+  debounceSearch = _.debounce(this.search, 500)
+
+  onChangeSearchBar(value) {
+    console.log(value)
+    this.setState({
+      search: value
+    }, () => {
+      this.debounceSearch(this.state.search)
+    })
+  }
+
+  onActionClickSearchBar() {
+    this.search(this.state.search)
+    console.log('action click search')
+  }
+
+  onConfirmSearchBar() {
+    this.search(this.state.search)
+    console.log('confirm search')
+  }
+
+  fetchDataSuccess(response) {
+    const { data, header } = response
+
+    this.setState({
+      products: data,
+      placeholder: false,
+      serviceError: false,
+      total: header['X-Total-Count']
+    })
+
+    if (data.length === 0) {
+      this.setState({
+        serviceError: true,
+        errorPageMessage: '没有可以显示的内容。'
+      })
     }
   }
 
-  removeTabBarBadge(type) {
-    switch (type) {
-      case 'badge':
-        Taro.removeTabBarBadge({
-          index: 1,
+  fetchDataFail(error) {
+    this.setState({
+      serviceError: true,
+      errorPageMessage: error.message
+    })
+  }
+
+  fetchDataComplete() {
+    if (process.env.NODE_ENV === 'development') {
+      setTimeout(() => {
+        this.setState({
+          searching: false
         })
-        break;
-      case 'dot':
-        Taro.hideTabBarRedDot({
-          index: 1,
-        })
-        break;
+      }, 2000)
+    } else {
+      this.setState({
+        searching: false
+      })
     }
+  }
+
+  async componentWillMount() {
+    this.fetchData({
+      resource: 'products',
+      page: this.state.current,
+      pageSize: this.state.pageSize,
+      success: this.fetchDataSuccess.bind(this),
+      fail: this.fetchDataFail.bind(this)
+    })
+  }
+
+  onPageChange({ current }) {
+    this.setState({
+      current,
+      placeholder: true
+    }, () => {
+      this.fetchData({
+        resource: 'products',
+        page: this.state.current,
+        pageSize: this.state.pageSize,
+        success: this.fetchDataSuccess.bind(this),
+        fail: this.fetchDataFail.bind(this)
+      })
+    })
   }
 
   render() {
+    const { products, placeholder, total, pageSize, current, serviceError, searching } = this.state
+    const page = (
+      <View>
+        <Placeholder className='m-3' quantity={pageSize} show={placeholder} />
+        {!placeholder && <ProductList data={products} />}
+        {total > pageSize &&
+          <AtPagination
+            icon
+            total={parseInt(total)}
+            pageSize={pageSize}
+            current={current}
+            className='my-4'
+            onPageChange={this.onPageChange.bind(this)}
+          />}
+      </View>
+    )
+
+    const errorPage = (
+      <View className='page-demo'>
+        {this.state.errorPageMessage}
+      </View>
+    )
     return (
       <View>
-        <SearchBar />
-        <View className='page-demo'>
-          <Text className='mx-1' onClick={this.switchTab.bind(this)}>SwitchTab</Text>
-          <Text className='mx-1' onClick={this.setTabBarBadge.bind(this, 'dot')}>Add</Text>
-          <Text className='mx-1' onClick={this.removeTabBarBadge.bind(this, 'dot')}>Remove</Text>
-        </View>
+        <SearchBar
+          value={this.state.search}
+          onChange={this.onChangeSearchBar.bind(this)}
+          onActionClick={this.onActionClickSearchBar.bind(this)}
+          onConfirm={this.onConfirmSearchBar.bind(this)}
+        />
+        {searching && <AtActivityIndicator className='position-absolute m-3' content='搜索中...' />}
+        {serviceError ? errorPage : page}
       </View>
     )
   }
